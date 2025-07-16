@@ -24,4 +24,6 @@ dev = []
 [project.urls]
 Homepage = "https://github.com/redoxcode/micropython-servo"
 
+[tool.ruff]
+line-length = 80
 

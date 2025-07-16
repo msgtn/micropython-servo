@@ -1,6 +1,12 @@
 LICENSE
 README.md
 pyproject.toml
+src/dynamixel_python/dynamixel_python.py
+src/dynamixel_python/dynamixel_sdk.py
+src/dynamixel_python/logging.py
+src/dynamixel_python/port_handler.py
+src/dynamixel_python/protocol2_packet_handler.py
+src/dynamixel_python/robotis_def.py
 src/micropython_servo.egg-info/PKG-INFO
 src/micropython_servo.egg-info/SOURCES.txt
 src/micropython_servo.egg-info/dependency_links.txt
