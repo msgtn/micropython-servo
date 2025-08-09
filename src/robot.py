@@ -51,16 +51,12 @@ class DynamixelRobot(DynamixelManager):
 
     def safe_get(self, motor_id, attr, *args, **kwargs):
         return self.loop.run_until_complete(
-            self.safe_io(
-                motor_id=motor_id, attr=attr, _op="get", *args, **kwargs
-            )
+            self.safe_io(motor_id=motor_id, attr=attr, _op="get", *args, **kwargs)
         )
 
     def safe_set(self, motor_id, attr, *args, **kwargs):
         return self.loop.run_until_complete(
-            self.safe_io(
-                motor_id=motor_id, attr=attr, _op="set", *args, **kwargs
-            )
+            self.safe_io(motor_id=motor_id, attr=attr, _op="set", *args, **kwargs)
         )
 
     def add_motor(self, motor_id, motor_model=DYNAMIXEL_MODEL):
@@ -71,9 +67,10 @@ class DynamixelRobot(DynamixelManager):
                 )
             }
         )
+        self.id_motors[motor_id].set_torque_enable(True)
 
     async def safe_io(
-        self, motor_id: int, attr: str, _op: str, n_attempts=4, **kwargs
+        self, motor_id: int, attr: str, _op: str, n_attempts=4, *args, **kwargs
     ):
         io_attr_fn = getattr(self.id_motors[motor_id], f"{_op}_{attr}", None)
         if io_attr_fn is not None:
@@ -94,6 +91,5 @@ class DynamixelRobot(DynamixelManager):
     def write_motor_states(self, msg_dict: dict[int, float]):
         for motor_id, msg in msg_dict.items():
             if motor_id in self.id_motors:
+                # self.safe_set(motor_id, "goal_position", int(msg))
                 self.id_motors[motor_id].set_goal_position(int(msg))
-                # max(0, int(msg*4096/180)))
-                print(f"wrote {motor_id=} to {msg=}")
