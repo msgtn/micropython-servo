@@ -1,1 +1,1 @@
-from protocol2_packet_handler import *
+from dynamixel_python.protocol2_packet_handler import *

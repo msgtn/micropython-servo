@@ -19,7 +19,7 @@
 
 # Author: Ryu Woon Jung (Leon)
 
-from robotis_def import *
+from dynamixel_python.robotis_def import *
 
 TXPACKET_MAX_LEN = 1 * 1024
 RXPACKET_MAX_LEN = 1 * 1024

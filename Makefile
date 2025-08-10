@@ -1,5 +1,9 @@
+.PHONY: micropython-dl 
+micropython-dl:
+	sudo wget https://micropython.org/download/rp2-pico-w/rp2-pico-w-latest.uf2 -P /media/$(shell whoami)/
+
 main:
-	cp main.py /pyboard
+	cp src/main.py /pyboard
 
 deps:
 	cp -r src/dynamixel_python /pyboard/
@@ -7,3 +11,4 @@ deps:
 	cp -r src/*.py /pyboard/
 	mkdir -p /pyboard/control_tables
 	cp control_tables/xl330-m288.json /pyboard/control_tables
+

@@ -1,10 +1,10 @@
 import json
 import time
 
-import dynamixel_sdk as dxl
+import dynamixel_python.dynamixel_sdk as dxl
 
-from protocol2_packet_handler import Protocol2PacketHandler as PacketHandler
-from port_handler import PortHandler
+from dynamixel_python.protocol2_packet_handler import Protocol2PacketHandler as PacketHandler
+from dynamixel_python.port_handler import PortHandler
 
 
 class InvalidDataSize(Exception):
