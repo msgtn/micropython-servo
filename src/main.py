@@ -12,7 +12,9 @@ led = Pin("LED", Pin.OUT)
 USB_PORT = "/dev/tty.usbmodem101"
 BAUDRATE = 57600
 
-robot = DynamixelRobot(usb_port=USB_PORT, baudrate=BAUDRATE, motor_ids=[1, 2, 3, 4])
+robot = DynamixelRobot(
+    usb_port=USB_PORT, baudrate=BAUDRATE, motor_ids=[1, 2, 3, 4]
+)
 # robot = Robot(motor_pin_ids={1: 2, 2: 3, 3: 6, 4: 7})
 
 
@@ -72,6 +74,7 @@ def read_uart(buffer):
 
                     # Reset the buffer index for the next message
                     # buffer_index = 0
+        v = buffer[:buffer_index].decode("utf-8").strip()
     except:
         pass
 
@@ -83,10 +86,12 @@ def read_cmds_uart():
         led.value(0)
         # while uart.any() > 0:
         if uart.any() > 0:
+            # print("uart")
             led.value(1)
             read_uart(buffer)
 
         elif select.select([sys.stdin], [], [], 0.0)[0]:
+            # print("stdin")
             led.value(1)
             read_stdin()
         # Add a small delay to avoid busy-waiting
