@@ -9,14 +9,15 @@ from robot import DynamixelRobot, Robot
 
 led = Pin("LED", Pin.OUT)
 
-USB_PORT = "/dev/tty.usbmodem101"
-BAUDRATE = 57600
+# uncomment lines below for dynamixel actors
+# USB_PORT = "/dev/tty.usbmodem101"
+# BAUDRATE = 57600
+# robot = DynamixelRobot(
+#     usb_port=USB_PORT, baudrate=BAUDRATE, motor_ids=[1, 2, 3, 4]
+# )
 
-robot = DynamixelRobot(
-    usb_port=USB_PORT, baudrate=BAUDRATE, motor_ids=[1, 2, 3, 4]
-)
-# robot = Robot(motor_pin_ids={1: 2, 2: 3, 3: 6, 4: 7})
-
+# uncomment lines below for servo actors ()
+robot = Robot(motor_pin_ids={1: 18, 2: 19, 3: 20, 4: 21})
 
 uart = UART(1, 115200, tx=Pin(4), rx=Pin(5), timeout_char=100)
 
