@@ -16,7 +16,7 @@ led = Pin("LED", Pin.OUT)
 #     usb_port=USB_PORT, baudrate=BAUDRATE, motor_ids=[1, 2, 3, 4]
 # )
 
-# uncomment lines below for servo actors ()
+# uncomment lines below for servo actors (WS-SG90, DF9GMS or equivalent)
 robot = Robot(motor_pin_ids={1: 18, 2: 19, 3: 20, 4: 21})
 
 uart = UART(1, 115200, tx=Pin(4), rx=Pin(5), timeout_char=100)
