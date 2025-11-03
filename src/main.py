@@ -1,32 +1,35 @@
 import math as np
 import sys
 import time
+from utime import sleep_us
 import select
 
 from machine import UART, Pin
 
 from robot import DynamixelRobot, Robot
+from hcsr04 import HCSR04
 
 led = Pin("LED", Pin.OUT)
 
-# uncomment lines below for dynamixel actors
-# USB_PORT = "/dev/tty.usbmodem101"
-# BAUDRATE = 57600
-# robot = DynamixelRobot(
-#     usb_port=USB_PORT, baudrate=BAUDRATE, motor_ids=[1, 2, 3, 4]
-# )
+USB_PORT = "/dev/tty.usbmodem101"
+BAUDRATE = 57600
 
-# uncomment lines below for servo actors (WS-SG90, DF9GMS or equivalent)
-robot = Robot(motor_pin_ids={1: 18, 2: 19, 3: 20, 4: 21})
+robot = DynamixelRobot(
+    usb_port=USB_PORT, baudrate=BAUDRATE, motor_ids=[1, 2, 3, 4]
+)
+# robot = Robot(motor_pin_ids={1: 2, 2: 3, 3: 6, 4: 7})
 
 uart = UART(1, 115200, tx=Pin(4), rx=Pin(5), timeout_char=100)
 
-# LED test: blink twice
-for _ in range(2):
-    led.value(1)
-    time.sleep(0.3)
-    led.value(0)
-    time.sleep(0.3)
+serial = UART(0, 115200, timeout_char=100)
+pin_trigger = 2
+pin_echo = 3
+sensor = HCSR04(
+    trigger_pin=pin_trigger,
+    echo_pin=pin_echo,
+)
+PORT = "/dev/ttyACM0"
+
 
 def cmddict_from_msg(msg: str):
     # input like: 1=50&2=30
@@ -58,7 +61,7 @@ def read_cmds():
             robot.write_motor_states(msg_dict)
         else:
             # Add a small delay to avoid busy-waiting
-            time.sleep(0.01)
+            sleep_us(5)
 
 
 def read_uart(buffer):
@@ -90,6 +93,9 @@ def read_cmds_uart():
     buffer = bytearray(1024)  # Pre-allocate a buffer of length 1024
 
     while True:
+        # sys.stdout.write(str(sensor.distance_mm()) + "\n")
+        serial.write(str(sensor.distance_mm()) + "\n")
+
         led.value(0)
         # while uart.any() > 0:
         if uart.any() > 0:
@@ -102,7 +108,8 @@ def read_cmds_uart():
             led.value(1)
             read_stdin()
         # Add a small delay to avoid busy-waiting
-        time.sleep(0.01)
+        sleep_us(10)
+        # time.sleep(0.01)
 
 
 def sin_mvmt():
