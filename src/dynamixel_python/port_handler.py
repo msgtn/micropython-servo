@@ -20,8 +20,9 @@
 # Author: Ryu Woon Jung (Leon)
 
 import time
+
 # import serial # This gets swapped with UART?
-from machine import UART
+from machine import UART, Pin
 import sys
 import platform
 
@@ -77,18 +78,18 @@ class PortHandler(object):
     def readPort(self, length):
         # print(self.ser.any())
         if self.ser.any():
-        # if (sys.version_info > (3, 0)):
+            # if (sys.version_info > (3, 0)):
             # return self.ser.read(length)
-        # else:
+            # else:
             # print()
             # res = self.ser.read()
             res = self.ser.read(length)
             # print(res)
             return res
-                
-                # ret.append(ord(c))
             # return [ord(ch) for ch in res]
             # return [ord(ch) for ch in self.ser.read(length)]
+
+        # ret.append(ord(c))
         else:
             return []
 
@@ -105,7 +106,11 @@ class PortHandler(object):
 
     def setPacketTimeout(self, packet_length):
         self.packet_start_time = self.getCurrentTime()
-        self.packet_timeout = (self.tx_time_per_byte * packet_length) + (LATENCY_TIMER * 2.0) + 2.0
+        self.packet_timeout = (
+            (self.tx_time_per_byte * packet_length)
+            + (LATENCY_TIMER * 2.0)
+            + 2.0
+        )
 
     def setPacketTimeoutMillis(self, msec):
         self.packet_start_time = self.getCurrentTime()
@@ -142,7 +147,18 @@ class PortHandler(object):
         #     timeout=0
         # )
 
-        self.ser = UART(0, baudrate=self.baudrate, )
+        # self.ser = UART(
+        #     0,
+        #     baudrate=self.baudrate,
+        # )
+        self.ser = UART(
+            0,
+            # 1,
+            baudrate=self.baudrate,
+            # tx=Pin(4),
+            # rx=Pin(5),
+            timeout_char=100,
+        )
 
         self.is_open = True
 
@@ -153,8 +169,25 @@ class PortHandler(object):
         return True
 
     def getCFlagBaud(self, baudrate):
-        if baudrate in [9600, 19200, 38400, 57600, 115200, 230400, 460800, 500000, 576000, 921600, 1000000, 1152000,
-                        2000000, 2500000, 3000000, 3500000, 4000000]:
+        if baudrate in [
+            9600,
+            19200,
+            38400,
+            57600,
+            115200,
+            230400,
+            460800,
+            500000,
+            576000,
+            921600,
+            1000000,
+            1152000,
+            2000000,
+            2500000,
+            3000000,
+            3500000,
+            4000000,
+        ]:
             return baudrate
         else:
-            return -1            
+            return -1

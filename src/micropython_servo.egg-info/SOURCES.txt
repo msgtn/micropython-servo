@@ -1,6 +1,11 @@
 LICENSE
 README.md
 pyproject.toml
+src/__init__.py
+src/hcsr04.py
+src/main.py
+src/robot.py
+src/dynamixel_python/__init__.py
 src/dynamixel_python/dynamixel_python.py
 src/dynamixel_python/dynamixel_sdk.py
 src/dynamixel_python/logging.py

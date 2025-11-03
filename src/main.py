@@ -9,6 +9,7 @@ from machine import UART, Pin
 from robot import DynamixelRobot, Robot
 from hcsr04 import HCSR04
 
+
 led = Pin("LED", Pin.OUT)
 
 USB_PORT = "/dev/tty.usbmodem101"
@@ -20,10 +21,13 @@ robot = DynamixelRobot(
 # robot = Robot(motor_pin_ids={1: 2, 2: 3, 3: 6, 4: 7})
 
 uart = UART(1, 115200, tx=Pin(4), rx=Pin(5), timeout_char=100)
+poll = select.poll()
+poll.register(sys.stdin)
 
-serial = UART(0, 115200, timeout_char=100)
-pin_trigger = 2
-pin_echo = 3
+# serial = UART(0, 115200, timeout_char=100)
+
+pin_trigger = 14
+pin_echo = 15
 sensor = HCSR04(
     trigger_pin=pin_trigger,
     echo_pin=pin_echo,
@@ -91,19 +95,30 @@ def read_uart(buffer):
 
 def read_cmds_uart():
     buffer = bytearray(1024)  # Pre-allocate a buffer of length 1024
+    last_distance_time = time.ticks_ms()
+    distance_interval_ms = 100  # Output every 100ms
 
     while True:
         # sys.stdout.write(str(sensor.distance_mm()) + "\n")
-        serial.write(str(sensor.distance_mm()) + "\n")
+        # serial.write(str(sensor.distance_mm()) + "\n")
+
+        now = time.ticks_ms()
+        if time.ticks_diff(now, last_distance_time) >= distance_interval_ms:
+            try:
+                sys.stdout.write(str(sensor.distance_mm()) + "\n")
+            except Exception as e:
+                sys.stdout.write("sensor error\n")
+            last_distance_time = now
 
         led.value(0)
-        # while uart.any() > 0:
         if uart.any() > 0:
             # print("uart")
             led.value(1)
             read_uart(buffer)
 
         elif select.select([sys.stdin], [], [], 0.0)[0]:
+            # elif poll.poll(1):
+            # elif len(stdin_poll) > 0:
             # print("stdin")
             led.value(1)
             read_stdin()
