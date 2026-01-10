@@ -5,6 +5,9 @@ include(pico_sdk_import.cmake)
 
 project(servo_controller C CXX ASM)
 
+# Robot type selection
+option(USE_DYNAMIXEL "Use DynamixelRobot instead of Robot (PWM servos)" OFF)
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -42,3 +45,8 @@ pico_enable_stdio_uart(servo_controller 0)
 
 # Create map/bin/hex/uf2 files
 pico_add_extra_outputs(servo_controller)
+
+# Apply compile definitions based on options
+if(USE_DYNAMIXEL)
+    target_compile_definitions(servo_controller PRIVATE USE_DYNAMIXEL=1)
+endif()

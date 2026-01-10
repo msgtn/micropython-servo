@@ -116,23 +116,24 @@ int main() {
   gpio_set_function(UART_CMD_RX_PIN, GPIO_FUNC_UART);
   uart_set_fifo_enabled(uart1, true);
 
+#ifdef USE_DYNAMIXEL
   // Initialize Dynamixel robot (uses UART0)
-  // DynamixelRobot robot(uart0, UART_DXL_TX_PIN, UART_DXL_RX_PIN,
-  // UART_DXL_BAUD);
+  DynamixelRobot robot(uart0, UART_DXL_TX_PIN, UART_DXL_RX_PIN, UART_DXL_BAUD);
+  if (!robot.init()) {
+    printf("Failed to initialize Dynamixel robot\n");
+  }
+  robot.addMotor(1);
+  robot.addMotor(2);
+  robot.addMotor(3);
+  robot.addMotor(4);
+#else
+  // Initialize PWM servo robot
   Robot robot;
-  // if (!robot.init()) {
-  //     printf("Failed to initialize Dynamixel robot\n");
-  // }
-
-  // Add motors 1-4
-  // robot.addMotor(1);
-  // robot.addMotor(2);
-  // robot.addMotor(3);
-  // robot.addMotor(4);
   robot.addServo(1, 2);
   robot.addServo(2, 3);
   robot.addServo(3, 6);
   robot.addServo(4, 7);
+#endif
 
   // Initialize HC-SR04 distance sensor (optional - uncomment to enable)
   sensors::HCSR04 distance_sensor(HCSR04_TRIGGER_PIN, HCSR04_ECHO_PIN);

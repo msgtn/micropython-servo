@@ -7,7 +7,6 @@ import select
 from machine import UART, Pin
 
 from robot import DynamixelRobot, Robot
-from hcsr04 import HCSR04
 
 
 led = Pin("LED", Pin.OUT)
@@ -26,12 +25,14 @@ poll.register(sys.stdin)
 
 # serial = UART(0, 115200, timeout_char=100)
 
-pin_trigger = 14
-pin_echo = 15
-sensor = HCSR04(
-    trigger_pin=pin_trigger,
-    echo_pin=pin_echo,
-)
+from hcsr04 import HCSR04
+
+# pin_trigger = 14
+# pin_echo = 15
+# sensor = HCSR04(
+#     trigger_pin=pin_trigger,
+#     echo_pin=pin_echo,
+# )
 PORT = "/dev/ttyACM0"
 
 
@@ -95,20 +96,20 @@ def read_uart(buffer):
 
 def read_cmds_uart():
     buffer = bytearray(1024)  # Pre-allocate a buffer of length 1024
-    last_distance_time = time.ticks_ms()
-    distance_interval_ms = 100  # Output every 100ms
+    # last_distance_time = time.ticks_ms()
+    # distance_interval_ms = 100  # Output every 100ms
 
     while True:
         # sys.stdout.write(str(sensor.distance_mm()) + "\n")
         # serial.write(str(sensor.distance_mm()) + "\n")
 
-        now = time.ticks_ms()
-        if time.ticks_diff(now, last_distance_time) >= distance_interval_ms:
-            try:
-                sys.stdout.write(str(sensor.distance_mm()) + "\n")
-            except Exception as e:
-                sys.stdout.write("sensor error\n")
-            last_distance_time = now
+        # now = time.ticks_ms()
+        # if time.ticks_diff(now, last_distance_time) >= distance_interval_ms:
+        #     try:
+        #         sys.stdout.write(str(sensor.distance_mm()) + "\n")
+        #     except Exception as e:
+        #         sys.stdout.write("sensor error\n")
+        #     last_distance_time = now
 
         led.value(0)
         if uart.any() > 0:

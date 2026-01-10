@@ -56,6 +56,8 @@ size_t PortHandler::readPort(uint8_t* buffer, size_t length) {
 
 size_t PortHandler::writePort(const uint8_t* packet, size_t length) {
     uart_write_blocking(uart_, packet, length);
+    // Wait for transmission to fully complete before switching to RX mode
+    uart_tx_wait_blocking(uart_);
     return length;
 }
 

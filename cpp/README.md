@@ -26,14 +26,21 @@ C++ implementation of the MicroPython servo controller for Raspberry Pi Pico. Co
 ```bash
 cd cpp
 mkdir build
+# PWM servos (default)
+cmake -B build . && cmake --build build
+
+# Dynamixel servos
+cmake -B build -DUSE_DYNAMIXEL=ON . && cmake --build build
+
 cd build
-cmake ..
 make -j4
 ```
 
 This produces `servo_controller.uf2` in the build directory.
 
 ## Flashing
+
+### Method 1: BOOTSEL (Manual)
 
 1. Hold the **BOOTSEL** button on the Pico
 2. Connect the Pico to USB while holding the button
@@ -44,6 +51,46 @@ This produces `servo_controller.uf2` in the build directory.
    ```
 
 The Pico will automatically reboot and run the firmware.
+
+### Method 2: picotool (Recommended)
+
+picotool allows flashing without manually entering BOOTSEL mode.
+
+**Install picotool:**
+```bash
+# Ubuntu/Debian
+sudo apt install picotool
+
+# From source (if not in package manager)
+git clone https://github.com/raspberrypi/picotool.git
+cd picotool
+mkdir build && cd build
+cmake .. && make
+sudo make install
+```
+
+**Load firmware:**
+```bash
+# Force device into BOOTSEL mode and load firmware
+picotool load -f servo_controller.uf2
+
+# Reboot into application mode after loading
+picotool reboot
+```
+
+**Combined load and reboot:**
+```bash
+picotool load -f servo_controller.uf2 && picotool reboot
+```
+
+**Other useful commands:**
+```bash
+picotool info          # Show device info
+picotool info -a       # Show all info including program details
+picotool reboot -f -u  # Force reboot into BOOTSEL mode
+```
+
+Note: You may need `sudo` for picotool commands, or set up udev rules for non-root access.
 
 ## Pin Configuration
 
