@@ -21,13 +21,13 @@ robot = DynamixelRobot(
 
 uart = UART(1, 115200, tx=Pin(4), rx=Pin(5), timeout_char=100)
 
-serial = UART(0, 115200, timeout_char=100)
-pin_trigger = 2
-pin_echo = 3
-sensor = HCSR04(
-    trigger_pin=pin_trigger,
-    echo_pin=pin_echo,
-)
+# serial = UART(0, 115200, timeout_char=100)
+# pin_trigger = 2
+# pin_echo = 3
+# sensor = HCSR04(
+#     trigger_pin=pin_trigger,
+#     echo_pin=pin_echo,
+# )
 PORT = "/dev/ttyACM0"
 
 
@@ -39,7 +39,6 @@ def cmddict_from_msg(msg: str):
         splits = line.split("=")[:2]
         if len(splits) == 0 or len(splits[0]) == 0:
             continue
-        # print(splits)
         [pin_id, value] = splits
         ret.update({int(pin_id): float(value)})
 
@@ -94,7 +93,7 @@ def read_cmds_uart():
 
     while True:
         # sys.stdout.write(str(sensor.distance_mm()) + "\n")
-        serial.write(str(sensor.distance_mm()) + "\n")
+        # serial.write(str(sensor.distance_mm()) + "\n")
 
         led.value(0)
         # while uart.any() > 0:

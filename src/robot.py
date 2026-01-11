@@ -51,12 +51,16 @@ class DynamixelRobot(DynamixelManager):
 
     def safe_get(self, motor_id, attr, *args, **kwargs):
         return self.loop.run_until_complete(
-            self.safe_io(motor_id=motor_id, attr=attr, _op="get", *args, **kwargs)
+            self.safe_io(
+                motor_id=motor_id, attr=attr, _op="get", *args, **kwargs
+            )
         )
 
     def safe_set(self, motor_id, attr, *args, **kwargs):
         return self.loop.run_until_complete(
-            self.safe_io(motor_id=motor_id, attr=attr, _op="set", *args, **kwargs)
+            self.safe_io(
+                motor_id=motor_id, attr=attr, _op="set", *args, **kwargs
+            )
         )
 
     def add_motor(self, motor_id, motor_model=DYNAMIXEL_MODEL):
