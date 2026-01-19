@@ -19,8 +19,8 @@ constexpr uint UART_DXL_TX_PIN = 0;
 constexpr uint UART_DXL_RX_PIN = 1;
 constexpr uint UART_DXL_BAUD = 57600;
 
-constexpr uint HCSR04_TRIGGER_PIN = 14;
-constexpr uint HCSR04_ECHO_PIN = 15;
+constexpr uint HCSR04_TRIGGER_PIN = 15;
+constexpr uint HCSR04_ECHO_PIN = 14;
 
 // Command buffer
 constexpr size_t CMD_BUFFER_SIZE = 1024;
@@ -129,10 +129,10 @@ int main() {
 #else
   // Initialize PWM servo robot
   Robot robot;
-  robot.addServo(1, 2);
-  robot.addServo(2, 3);
-  robot.addServo(3, 6);
-  robot.addServo(4, 7);
+  robot.addServo(1, 6);
+  robot.addServo(2, 7);
+  robot.addServo(3, 10);
+  robot.addServo(4, 11);
 #endif
 
   // Initialize HC-SR04 distance sensor (optional - uncomment to enable)
@@ -196,10 +196,15 @@ int main() {
     uint32_t now = to_ms_since_boot(get_absolute_time());
     if (now - last_distance_time >= DISTANCE_INTERVAL_MS) {
       int32_t distance_mm = distance_sensor.distanceMm();
+      char uart_buffer[32];
       if (distance_mm >= 0) {
-        printf("%d\n", distance_mm);
+        snprintf(uart_buffer, sizeof(uart_buffer), "%d\n", distance_mm);
+        printf("%s", uart_buffer);
+        uart_puts(uart1, uart_buffer);
       } else {
-        printf("sensor error\n");
+        snprintf(uart_buffer, sizeof(uart_buffer), "sensor error\n");
+        printf("%s", uart_buffer);
+        uart_puts(uart1, uart_buffer);
       }
       last_distance_time = now;
     }
