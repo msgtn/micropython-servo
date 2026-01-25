@@ -82,7 +82,6 @@ set(CMAKE_TARGET_DEFINITIONS_ASM
   "PICO_RP2040_USB_DEVICE_UFRAME_FIX=1"
   "PICO_TARGET_NAME=\"servo_controller\""
   "PICO_USE_BLOCKED_RAM=0"
-  "USE_DYNAMIXEL=1"
   )
 
 # The include file search paths:

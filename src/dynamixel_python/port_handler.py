@@ -117,11 +117,9 @@ class PortHandler(object):
         self.packet_timeout = msec
 
     def isPacketTimeout(self):
-        return False
         if self.getTimeSinceStart() > self.packet_timeout:
             self.packet_timeout = 0
             return True
-
         return False
 
     def getCurrentTime(self):

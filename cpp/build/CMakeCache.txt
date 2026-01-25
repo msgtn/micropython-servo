@@ -328,7 +328,7 @@ PICO_STDIO_USB:BOOL=OFF
 PIOASM_INSTALL_DIR:PATH=/home/ms/Developer/pico/micropython-servo/cpp/build/pioasm-install
 
 //Use DynamixelRobot instead of Robot (PWM servos)
-USE_DYNAMIXEL:BOOL=ON
+USE_DYNAMIXEL:BOOL=OFF
 
 //Value Computed by CMake
 pico_sdk_BINARY_DIR:STATIC=/home/ms/Developer/pico/micropython-servo/cpp/build/pico-sdk

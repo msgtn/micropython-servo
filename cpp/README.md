@@ -80,7 +80,7 @@ picotool reboot
 
 **Combined load and reboot:**
 ```bash
-picotool load -f servo_controller.uf2 && picotool reboot
+sudo picotool load -f servo_controller.uf2 && sudo picotool reboot -f
 ```
 
 **Other useful commands:**
