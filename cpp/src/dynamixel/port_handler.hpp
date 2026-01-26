@@ -23,6 +23,7 @@ public:
 
     size_t readPort(uint8_t* buffer, size_t length);
     size_t writePort(const uint8_t* packet, size_t length);
+    void discardEcho(size_t length);
 
     void setPacketTimeout(size_t packet_length);
     void setPacketTimeoutMillis(double msec);

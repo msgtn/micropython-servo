@@ -61,6 +61,23 @@ size_t PortHandler::writePort(const uint8_t* packet, size_t length) {
     return length;
 }
 
+void PortHandler::discardEcho(size_t length) {
+    // On half-duplex bus, we receive our own transmission as echo
+    // Read and discard exactly 'length' bytes with timeout
+    size_t discarded = 0;
+    uint64_t start = time_us_64();
+    uint64_t timeout_us = (length * 200) + 5000;  // ~200us per byte at 57600 + margin
+
+    while (discarded < length) {
+        if (uart_is_readable(uart_)) {
+            uart_getc(uart_);
+            discarded++;
+        } else if (time_us_64() - start > timeout_us) {
+            break;  // Timeout - echo may not be present
+        }
+    }
+}
+
 void PortHandler::setPacketTimeout(size_t packet_length) {
     packet_start_time_ = getCurrentTime();
     packet_timeout_ = (tx_time_per_byte_ * static_cast<double>(packet_length))

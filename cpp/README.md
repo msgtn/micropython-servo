@@ -26,15 +26,29 @@ C++ implementation of the MicroPython servo controller for Raspberry Pi Pico. Co
 ```bash
 cd cpp
 mkdir build
+
 # PWM servos (default)
 cmake -B build . && cmake --build build
 
 # Dynamixel servos
 cmake -B build -DUSE_DYNAMIXEL=ON . && cmake --build build
 
+# Without distance sensor output
+cmake -B build -DUSE_DISTANCE_SENSOR=OFF . && cmake --build build
+
+# Dynamixel servos without distance sensor
+cmake -B build -DUSE_DYNAMIXEL=ON -DUSE_DISTANCE_SENSOR=OFF . && cmake --build build
+
 cd build
 make -j4
 ```
+
+### Build Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `USE_DYNAMIXEL` | OFF | Use Dynamixel servos instead of PWM servos |
+| `USE_DISTANCE_SENSOR` | ON | Enable HC-SR04 distance sensor output |
 
 This produces `servo_controller.uf2` in the build directory.
 
@@ -143,23 +157,14 @@ cpp/
         └── hcsr04.hpp/cpp
 ```
 
-## Enabling Distance Sensor
+## Distance Sensor
 
-The HC-SR04 distance sensor is disabled by default. To enable it, uncomment the relevant lines in `src/main.cpp`:
+The HC-SR04 distance sensor is enabled by default. Distance readings (in mm) are output every 100ms via both USB serial and UART1.
 
-```cpp
-// Uncomment to enable:
-sensors::HCSR04 distance_sensor(HCSR04_TRIGGER_PIN, HCSR04_ECHO_PIN);
-uint32_t last_distance_time = 0;
-constexpr uint32_t DISTANCE_INTERVAL_MS = 100;
+To disable it:
 
-// And in the main loop:
-uint32_t now = to_ms_since_boot(get_absolute_time());
-if (now - last_distance_time >= DISTANCE_INTERVAL_MS) {
-    int32_t distance_mm = distance_sensor.distanceMm();
-    printf("%d\n", distance_mm);
-    last_distance_time = now;
-}
+```bash
+cmake -B build -DUSE_DISTANCE_SENSOR=OFF . && cmake --build build
 ```
 
 ## Using PWM Servos Instead

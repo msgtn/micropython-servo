@@ -7,6 +7,7 @@ project(servo_controller C CXX ASM)
 
 # Robot type selection
 option(USE_DYNAMIXEL "Use DynamixelRobot instead of Robot (PWM servos)" OFF)
+option(USE_DISTANCE_SENSOR "Enable HC-SR04 distance sensor output" ON)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -49,4 +50,8 @@ pico_add_extra_outputs(servo_controller)
 # Apply compile definitions based on options
 if(USE_DYNAMIXEL)
     target_compile_definitions(servo_controller PRIVATE USE_DYNAMIXEL=1)
+endif()
+
+if(USE_DISTANCE_SENSOR)
+    target_compile_definitions(servo_controller PRIVATE USE_DISTANCE_SENSOR=1)
 endif()

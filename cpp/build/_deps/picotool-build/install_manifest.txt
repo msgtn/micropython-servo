@@ -1,7 +1,0 @@
-/home/ms/Developer/pico/micropython-servo/cpp/build/_deps/picotool/picotool
-/home/ms/Developer/pico/micropython-servo/cpp/build/_deps/picotool/picotoolTargets.cmake
-/home/ms/Developer/pico/micropython-servo/cpp/build/_deps/picotool/picotoolTargets-release.cmake
-/home/ms/Developer/pico/micropython-servo/cpp/build/_deps/picotool/picotoolConfig.cmake
-/home/ms/Developer/pico/micropython-servo/cpp/build/_deps/picotool/picotoolConfigVersion.cmake
-/home/ms/Developer/pico/micropython-servo/cpp/build/_deps/picotool/enc_bootloader.elf
-/home/ms/Developer/pico/micropython-servo/cpp/build/_deps/picotool/enc_bootloader_mbedtls.elf

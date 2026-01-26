@@ -1,5 +1,6 @@
 #include "packet_handler.hpp"
 #include <cstring>
+#include "pico/stdlib.h"
 
 namespace dynamixel {
 
@@ -104,7 +105,7 @@ int PacketHandler::txPacket(PortHandler& port, uint8_t* txpacket) {
     txpacket[total_packet_length - 2] = DXL_LOBYTE(crc);
     txpacket[total_packet_length - 1] = DXL_HIBYTE(crc);
 
-    // Clear port and transmit
+    // Clear port before transmit
     port.clearPort();
     size_t written = port.writePort(txpacket, total_packet_length);
 
@@ -112,6 +113,9 @@ int PacketHandler::txPacket(PortHandler& port, uint8_t* txpacket) {
         port.setUsing(false);
         return COMM_TX_FAIL;
     }
+
+    // Discard echo bytes from half-duplex bus
+    port.discardEcho(total_packet_length);
 
     return COMM_SUCCESS;
 }
@@ -228,6 +232,12 @@ int PacketHandler::txRxPacket(PortHandler& port, uint8_t* txpacket, uint8_t* rxp
     if (result == COMM_SUCCESS && txpacket[PKT_ID] == rxpacket[PKT_ID]) {
         error = rxpacket[PKT_ERROR];
     }
+
+    // Clear any remaining bytes in the buffer before next transaction
+    port.clearPort();
+
+    // Delay between transactions to allow bus to settle
+    sleep_us(500);
 
     return result;
 }

@@ -135,10 +135,11 @@ int main() {
   robot.addServo(4, 11);
 #endif
 
-  // Initialize HC-SR04 distance sensor (optional - uncomment to enable)
+#ifdef USE_DISTANCE_SENSOR
   sensors::HCSR04 distance_sensor(HCSR04_TRIGGER_PIN, HCSR04_ECHO_PIN);
   uint32_t last_distance_time = 0;
   constexpr uint32_t DISTANCE_INTERVAL_MS = 100;
+#endif
 
   printf("Servo controller ready\n");
 
@@ -191,8 +192,7 @@ int main() {
       }
     }
 
-    // Optional: Periodic distance sensor reading
-    // Uncomment the following block to enable distance sensor output
+#ifdef USE_DISTANCE_SENSOR
     uint32_t now = to_ms_since_boot(get_absolute_time());
     if (now - last_distance_time >= DISTANCE_INTERVAL_MS) {
       int32_t distance_mm = distance_sensor.distanceMm();
@@ -208,6 +208,7 @@ int main() {
       }
       last_distance_time = now;
     }
+#endif
 
     // Small delay to avoid busy-waiting
     sleep_us(10);
