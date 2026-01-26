@@ -4,7 +4,7 @@ micropython-dl:
 
 .PHONY: pico-reset
 pico-reset:
-	sudo wget https://datasheets.raspberrypi.com/soft/flash_nuke.uf2 -P /media/$(shell whoami)/RPI-RP2/
+	sudo wget https://datasheets.raspberrypi.com/soft/flash_nuke.uf2 -P /media/$(shell whoami)/RPI-RP21/
 
 main:
 	cp src/main.py /pyboard

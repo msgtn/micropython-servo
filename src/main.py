@@ -96,36 +96,33 @@ def read_uart(buffer):
 
 def read_cmds_uart():
     buffer = bytearray(1024)  # Pre-allocate a buffer of length 1024
-    # last_distance_time = time.ticks_ms()
-    # distance_interval_ms = 100  # Output every 100ms
+    last_check_time = time.ticks_ms()
+    check_interval_ms = 2000  # Check one motor every 2 seconds
+    motor_check_index = 0  # Which motor to check next
 
     while True:
-        # sys.stdout.write(str(sensor.distance_mm()) + "\n")
-        # serial.write(str(sensor.distance_mm()) + "\n")
-
-        # now = time.ticks_ms()
-        # if time.ticks_diff(now, last_distance_time) >= distance_interval_ms:
-        #     try:
-        #         sys.stdout.write(str(sensor.distance_mm()) + "\n")
-        #     except Exception as e:
-        #         sys.stdout.write("sensor error\n")
-        #     last_distance_time = now
-
         led.value(0)
         if uart.any() > 0:
-            # print("uart")
             led.value(1)
             read_uart(buffer)
 
         elif select.select([sys.stdin], [], [], 0.0)[0]:
-            # elif poll.poll(1):
-            # elif len(stdin_poll) > 0:
-            # print("stdin")
             led.value(1)
             read_stdin()
+
+        # Check one motor at a time to avoid blocking
+        now = time.ticks_ms()
+        if time.ticks_diff(now, last_check_time) >= check_interval_ms:
+            last_check_time = now
+            motor_ids = robot.motor_ids
+            if motor_ids:
+                motor_id = motor_ids[motor_check_index % len(motor_ids)]
+                motor_check_index += 1
+                if not robot.check_motor(motor_id):
+                    robot.reconnect_motor(motor_id)
+
         # Add a small delay to avoid busy-waiting
         sleep_us(10)
-        # time.sleep(0.01)
 
 
 def sin_mvmt():

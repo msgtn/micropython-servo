@@ -46,6 +46,8 @@ class DynamixelRobot(DynamixelManager):
         self.init()
         self.loop = asyncio.get_event_loop()
         self.id_motors: dict[int, DynamixelMotor] = {}
+        self.motor_ids = motor_ids
+        self.motor_model = DYNAMIXEL_MODEL
         for motor_id in motor_ids:
             self.add_motor(motor_id=motor_id)
 
@@ -91,5 +93,42 @@ class DynamixelRobot(DynamixelManager):
     def write_motor_states(self, msg_dict: dict[int, float]):
         for motor_id, msg in msg_dict.items():
             if motor_id in self.id_motors:
-                # self.safe_set(motor_id, "goal_position", int(msg))
                 self.id_motors[motor_id].set_goal_position(int(msg))
+
+    def check_motor(self, motor_id):
+        """Check if a motor is connected by reading its position."""
+        if motor_id not in self.id_motors:
+            return False
+        try:
+            pos = self.id_motors[motor_id].get_present_position()
+            return pos is not None and pos >= 0
+        except:
+            return False
+
+    def check_all_motors(self):
+        """Check all motors and return dict of {motor_id: connected}."""
+        return {mid: self.check_motor(mid) for mid in self.motor_ids}
+
+    def reconnect_motor(self, motor_id):
+        """Try to reconnect a disconnected motor."""
+        try:
+            # Remove old motor if exists
+            if motor_id in self.id_motors:
+                del self.id_motors[motor_id]
+            if f"motor_{motor_id}" in self.dxl_dict:
+                del self.dxl_dict[f"motor_{motor_id}"]
+            # Re-add motor
+            self.add_motor(motor_id=motor_id)
+            return self.check_motor(motor_id)
+        except:
+            return False
+
+    def reconnect_disconnected(self):
+        """Check all motors and reconnect any that are disconnected."""
+        status = self.check_all_motors()
+        reconnected = []
+        for motor_id, connected in status.items():
+            if not connected:
+                if self.reconnect_motor(motor_id):
+                    reconnected.append(motor_id)
+        return reconnected
