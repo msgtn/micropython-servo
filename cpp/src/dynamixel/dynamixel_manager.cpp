@@ -72,4 +72,10 @@ bool DynamixelManager::disableAll() {
     return success;
 }
 
+void DynamixelManager::reconnectAll() {
+    for (auto& [id, motor] : motors_) {
+        motor->tryReconnect();
+    }
+}
+
 }  // namespace dynamixel

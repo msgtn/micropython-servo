@@ -78,3 +78,7 @@ bool DynamixelRobot::enableAll() {
 bool DynamixelRobot::disableAll() {
     return manager_.disableAll();
 }
+
+void DynamixelRobot::reconnectAll() {
+    manager_.reconnectAll();
+}

@@ -16,6 +16,11 @@ bool DynamixelMotor::ping() {
     return (result == COMM_SUCCESS && error == 0);
 }
 
+bool DynamixelMotor::tryReconnect() {
+    // Blindly try to re-enable torque (doesn't rely on ping)
+    return setTorqueEnable(true);
+}
+
 bool DynamixelMotor::setTorqueEnable(bool enable) {
     uint8_t error = 0;
     int result = packet_.write1ByteTxRx(port_, id_, xl330::ADDR_TORQUE_ENABLE,

@@ -36,6 +36,9 @@ public:
     bool enableAll();
     bool disableAll();
 
+    // Try to reconnect all motors (blindly re-enable torque)
+    void reconnectAll();
+
     // Get the port and packet handlers
     PortHandler& getPortHandler() { return port_; }
     PacketHandler& getPacketHandler() { return packet_; }

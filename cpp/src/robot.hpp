@@ -50,6 +50,9 @@ public:
     bool enableAll();
     bool disableAll();
 
+    // Try to reconnect all motors (blindly re-enable torque)
+    void reconnectAll();
+
     // Get the underlying manager
     dynamixel::DynamixelManager& getManager() { return manager_; }
 

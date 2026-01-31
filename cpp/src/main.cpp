@@ -141,6 +141,11 @@ int main() {
   constexpr uint32_t DISTANCE_INTERVAL_MS = 100;
 #endif
 
+#ifdef USE_DYNAMIXEL
+  uint32_t last_reconnect_time = 0;
+  constexpr uint32_t RECONNECT_INTERVAL_MS = 3000;  // Try reconnect every 3 seconds
+#endif
+
   printf("Servo controller ready\n");
 
   // Main loop
@@ -192,9 +197,18 @@ int main() {
       }
     }
 
-#ifdef USE_DISTANCE_SENSOR
+#ifdef USE_DYNAMIXEL
+    // Periodically try to reconnect motors (blindly re-enable torque)
     uint32_t now = to_ms_since_boot(get_absolute_time());
-    if (now - last_distance_time >= DISTANCE_INTERVAL_MS) {
+    if (now - last_reconnect_time >= RECONNECT_INTERVAL_MS) {
+      robot.reconnectAll();
+      last_reconnect_time = now;
+    }
+#endif
+
+#ifdef USE_DISTANCE_SENSOR
+    uint32_t now_dist = to_ms_since_boot(get_absolute_time());
+    if (now_dist - last_distance_time >= DISTANCE_INTERVAL_MS) {
       int32_t distance_mm = distance_sensor.distanceMm();
       char uart_buffer[32];
       if (distance_mm >= 0) {
@@ -206,7 +220,7 @@ int main() {
         printf("%s", uart_buffer);
         uart_puts(uart1, uart_buffer);
       }
-      last_distance_time = now;
+      last_distance_time = now_dist;
     }
 #endif
 

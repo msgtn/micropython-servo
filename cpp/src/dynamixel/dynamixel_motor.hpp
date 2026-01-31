@@ -16,6 +16,13 @@ public:
     uint8_t getId() const { return id_; }
     const std::string& getName() const { return name_; }
 
+    // Connection state
+    bool isConnected() const { return connected_; }
+    void setConnected(bool connected) { connected_ = connected; }
+
+    // Try to reconnect: ping and re-enable torque
+    bool tryReconnect();
+
     // Ping the motor
     bool ping();
 
@@ -57,6 +64,7 @@ private:
     PacketHandler& packet_;
     uint8_t id_;
     std::string name_;
+    bool connected_ = false;
 };
 
 }  // namespace dynamixel
